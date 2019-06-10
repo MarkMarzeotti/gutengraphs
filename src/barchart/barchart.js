@@ -84,7 +84,7 @@ registerBlockType( 'gutengraphs/barchart', {
 			source: 'attribute', // binds an attribute of the tag
 			attribute: 'data-columns', // binds href of a: the link url
 		},
-		chartData: {
+		chartContent: {
 			selector: 'div', // From tag a
 			source: 'attribute', // binds an attribute of the tag
 			attribute: 'data-content', // binds href of a: the link url
@@ -118,22 +118,25 @@ registerBlockType( 'gutengraphs/barchart', {
 			props.setAttributes( { chartColumns: content } );
 		}
 
-		let columnsArray = props.attributes.chartColumns.split( ',' );
+		let columnsArray = ( props.attributes.chartColumns ) ? props.attributes.chartColumns.split( ',' ) : [ 'Year', 'Revenue', 'Sales', 'Expenses' ];
 		let columnsObject = columnsArray.map( function( col, index ) {
 			return { title: col, field: index };
 		} );
 
-		let chartArray = [];
-		if ( props.attributes.chartData ) {
-			chartArray = JSON.parse( props.attributes.chartData );
-		}
-
+		let chartArray = ( props.attributes.chartContent ) ? JSON.parse( props.attributes.chartContent ) : [
+			[ '2014', 1000, 400, 200 ],
+			[ '2015', 1170, 460, 250 ],
+			[ '2016', 660, 1120, 300 ],
+			[ '2017', 1030, 540, 350 ],
+		];
 		let chartObject = chartArray.map( function( row ) {
 			return Object.assign( {}, row );
 		} );
 
 		let fullChart = chartArray;
-		fullChart.unshift( props.attributes.chartColumns.split( ',' ) );
+		fullChart.unshift( columnsArray );
+
+		console.log( chartArray, chartObject, fullChart );
 
 		return [
 			<InspectorControls key="1">
@@ -178,20 +181,21 @@ registerBlockType( 'gutengraphs/barchart', {
 									onRowAdd: newData => new Promise( ( resolve, reject ) => {
 										setTimeout( () => {
 											{
-												const data = JSON.parse( props.attributes.chartData );
+												const data = props.attributes.chartContent ? JSON.parse( props.attributes.chartContent ) : chartArray;
 												data.push( newData );
-												props.setAttributes( { chartData: JSON.stringify( data ) }, () => resolve() );
+												props.setAttributes( { chartContent: JSON.stringify( data ) }, () => resolve() );
 											}
 											resolve();
 										}, 1000 );
 									} ),
 									onRowUpdate: ( newData, oldData ) => new Promise( ( resolve, reject ) => {
+										console.log( newData, oldData );
 										setTimeout( () => {
 											{
-												const data = JSON.parse( props.attributes.chartData );
+												const data = props.attributes.chartContent ? JSON.parse( props.attributes.chartContent ) : chartArray;
 												const index = data.indexOf( oldData );
 												data[ index ] = newData;
-												props.setAttributes( { chartData: JSON.stringify( data ) }, () => resolve() );
+												props.setAttributes( { chartContent: JSON.stringify( data ) }, () => resolve() );
 											}
 											resolve();
 										}, 1000 );
@@ -199,10 +203,10 @@ registerBlockType( 'gutengraphs/barchart', {
 									onRowDelete: oldData => new Promise( ( resolve, reject ) => {
 										setTimeout( () => {
 											{
-												const data = JSON.parse( props.attributes.chartData );
+												const data = props.attributes.chartContent ? JSON.parse( props.attributes.chartContent ) : chartArray;
 												const index = data.indexOf( oldData );
 												data.splice( index, 1 );
-												props.setAttributes( { chartData: JSON.stringify( data ) }, () => resolve() );
+												props.setAttributes( { chartContent: JSON.stringify( data ) }, () => resolve() );
 											}
 											resolve();
 										}, 1000 );
@@ -242,7 +246,7 @@ registerBlockType( 'gutengraphs/barchart', {
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
 				data-columns={ props.attributes.chartColumns }
-				data-content={ props.attributes.chartData }></div>
+				data-content={ props.attributes.chartContent }></div>
 		);
 	},
 } );
