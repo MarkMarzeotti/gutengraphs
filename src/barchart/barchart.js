@@ -120,7 +120,7 @@ registerBlockType( 'gutengraphs/barchart', {
 
 		let columnsArray = ( props.attributes.chartColumns ) ? props.attributes.chartColumns.split( ',' ) : [ 'Year', 'Revenue', 'Sales', 'Expenses' ];
 		let columnsObject = columnsArray.map( function( col, index ) {
-			return { title: col, field: index };
+			return { title: col, field: String( index ) };
 		} );
 
 		let chartArray = ( props.attributes.chartContent ) ? JSON.parse( props.attributes.chartContent ) : [
