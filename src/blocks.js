@@ -9,4 +9,4 @@
  * Webpack is compiling as the input file.
  */
 
-import './barchart/barchart.js';
+import './blocks/barchart/barchart.js';
