@@ -22,13 +22,9 @@ class DataModal extends React.Component {
 		};
 	}
 
-	handleClearEmpty = () => {
-		console.log( 'clear empty' );
-	}
-
-	prepareSaveGrid = () => {
-		console.log( 'save grid' );
-	}
+	// handleClearEmpty = () => {
+	// 	console.log( 'clear empty' );
+	// }
 
 	render() {
 		const config = {
