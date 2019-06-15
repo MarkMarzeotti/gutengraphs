@@ -10,21 +10,11 @@ class DataModal extends React.Component {
 			isOpen: false,
 			cols: 5,
 			rows: 6,
-			grid: {
-				rows: [
-					[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
-					[ '2014', '1000', '400', '200' ],
-					[ '2015', '1170', '460', '250' ],
-					[ '2016', '660', '1120', '300' ],
-					[ '2017', '1030', '540', '350' ],
-				],
+			chartData: {
+				rows: props.chartData,
 			},
 		};
 	}
-
-	// handleClearEmpty = () => {
-	// 	console.log( 'clear empty' );
-	// }
 
 	render() {
 		const config = {
@@ -36,7 +26,7 @@ class DataModal extends React.Component {
 			isHeadRowString: false,
 			canAddRow: true,
 			canAddColumn: true,
-			emptyValueSymbol: '-',
+			emptyValueSymbol: '',
 			hasLetterNumberHeads: false,
 		};
 
@@ -47,12 +37,14 @@ class DataModal extends React.Component {
 					<Modal
 						title={ this.props.title }
 						onRequestClose={ () => this.setState( { isOpen: false } ) }>
-						<div className="gutengraphs-datasheet-ui">
-							<Button isDefault onClick={ this.handleClearEmpty }>Clear Empty Rows and Columns</Button>
-							<Button isDefault isPrimary onClick={ () => this.props.handleSaveGrid( this.state.grid.rows ) }>Save Data</Button>
+						<div className="gutengraphs-datasheet-instructions">
+							<p>Empty rows and columns are cleared on graph update. To create a new row or column, focus the last cell in a row or column and navigate down or to the right respectively.</p>
 						</div>
 						<div className="gutengraphs-datasheet">
-							<SpreadsheetComponent initialData={ this.state.grid } config={ config } />
+							<SpreadsheetComponent initialData={ this.state.chartData } config={ config } />
+						</div>
+						<div className="gutengraphs-datasheet-ui">
+							<Button isDefault isPrimary onClick={ () => this.props.handleUpdateChartData( this.state.chartData.rows ) }>Update Graph Data</Button>
 						</div>
 					</Modal>
 				) }

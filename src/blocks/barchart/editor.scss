@@ -13,15 +13,20 @@
 	}
 }
 
-.gutengraphs-datasheet-ui {
+.gutengraphs-datasheet-instructions {
 	margin-bottom: 15px;
+}
+
+.gutengraphs-datasheet-ui {
+	text-align: right;
 
 	button {
-		margin-right: 10px;
+		margin-left: 10px;
 	}
 }
 
 .gutengraphs-datasheet {
+	margin-bottom: 15px;
 
 	table {
 		border-collapse: collapse;
@@ -42,6 +47,7 @@
 			display: block;
 			font-size: 12px;
 			margin: 0;
+			min-height: 33px;
 			padding: 5px;
 		}
 
@@ -73,7 +79,6 @@
 
 			td {
 				border-left: 1px solid #ccc;
-				min-height: 33px;
 				min-width: 60px;
 				padding: 0;
 				position: relative;

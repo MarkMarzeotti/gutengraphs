@@ -44,7 +44,7 @@ registerBlockType( 'gutengraphs/barchart', {
 			source: 'attribute', // binds an attribute of the tag
 			attribute: 'data-subtitle', // binds href of a: the link url
 		},
-		chartArray: {
+		chartData: {
 			selector: 'div', // From tag a
 			source: 'attribute', // binds an attribute of the tag
 			attribute: 'data-content', // binds href of a: the link url
@@ -65,7 +65,7 @@ registerBlockType( 'gutengraphs/barchart', {
 	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
 	 */
 	edit: function( props ) {
-		const chartArray = ( props.attributes.chartArray ) ? JSON.parse( props.attributes.chartArray ) : [
+		const chartData = ( props.attributes.chartData ) ? JSON.parse( props.attributes.chartData ) : [
 			[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
 			[ '2014', 1000, 400, 200 ],
 			[ '2015', 1170, 460, 250 ],
@@ -73,17 +73,39 @@ registerBlockType( 'gutengraphs/barchart', {
 			[ '2017', 1030, 540, 350 ],
 		];
 
-		const handleSaveGrid = ( grid ) => {
-			grid.map( ( row ) => {
-				row.map( ( col, index ) => {
-					const value = Number( col );
+		const handleUpdateChartData = ( newChartData ) => {
+			let currentRowEmpty = true;
+			let emptyColumns = [];
+			let offset = 0;
+			newChartData[ 0 ].map( ( col, colIndex ) => {
+				emptyColumns[ colIndex ] = col ? false : true;
+			} );
+			newChartData.map( ( row, rowIndex ) => {
+				row.map( ( col, colIndex ) => {
+					const value = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
+					if ( col ) {
+						currentRowEmpty = false;
+						emptyColumns[ colIndex ] = false;
+					}
 					if ( value ) {
 						col = value;
 					}
-					row[ index ] = col;
+					row[ colIndex ] = col;
 				} );
+				if ( currentRowEmpty ) {
+					newChartData.splice( rowIndex, 1 );
+				}
+				currentRowEmpty = true;
 			} );
-			props.setAttributes( { chartArray: JSON.stringify( grid ) } );
+			emptyColumns.map( ( col, colIndex ) => {
+				if ( col ) {
+					newChartData.map( ( row ) => {
+						row.splice( colIndex - offset, 1 );
+					} );
+					offset++;
+				}
+			} );
+			props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
 		};
 
 		return [
@@ -105,13 +127,13 @@ registerBlockType( 'gutengraphs/barchart', {
 					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Graph Data' ) }>
-					<DataModal title={ props.attributes.chartTitle } data={ chartArray } handleSaveGrid={ handleSaveGrid } />
+					<DataModal title={ props.attributes.chartTitle } chartData={ chartData } handleUpdateChartData={ handleUpdateChartData } />
 				</PanelBody>
 			</InspectorControls>,
 			<div className={ props.className } key="2">
 				<Chart
 					chartType="Bar"
-					data={ chartArray }
+					data={ chartData }
 					options={ {
 						chart: {
 							title: props.attributes.chartTitle,
@@ -136,7 +158,7 @@ registerBlockType( 'gutengraphs/barchart', {
 				id="barchart_material"
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
-				data-content={ props.attributes.chartArray }></div>
+				data-content={ props.attributes.chartData }></div>
 		);
 	},
 } );
