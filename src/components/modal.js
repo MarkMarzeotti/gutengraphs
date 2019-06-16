@@ -1,8 +1,10 @@
+import { Component } from 'react';
+
 const { Button, Modal } = wp.components;
 
 import SpreadsheetComponent from 'react-spreadsheet-component';
 
-class DataModal extends React.Component {
+class DataModal extends Component {
 	constructor( props ) {
 		super( props );
 

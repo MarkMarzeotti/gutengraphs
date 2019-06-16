@@ -75,7 +75,7 @@ registerBlockType( 'gutengraphs/barchart', {
 
 		const handleUpdateChartData = ( newChartData ) => {
 			let currentRowEmpty = true;
-			let emptyColumns = [];
+			const emptyColumns = [];
 			let offset = 0;
 			newChartData[ 0 ].map( ( col, colIndex ) => {
 				emptyColumns[ colIndex ] = col ? false : true;
