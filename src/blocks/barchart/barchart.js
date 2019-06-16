@@ -74,29 +74,37 @@ registerBlockType( 'gutengraphs/barchart', {
 		];
 
 		const handleUpdateChartData = ( newChartData ) => {
-			let currentRowEmpty = true;
+			const emptyRows = [];
 			const emptyColumns = [];
-			let offset = 0;
+
 			newChartData[ 0 ].map( ( col, colIndex ) => {
 				emptyColumns[ colIndex ] = col ? false : true;
 			} );
+
 			newChartData.map( ( row, rowIndex ) => {
+				let currentRowEmpty = true;
 				row.map( ( col, colIndex ) => {
-					const value = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
 					if ( col ) {
 						currentRowEmpty = false;
 						emptyColumns[ colIndex ] = false;
 					}
-					if ( value ) {
-						col = value;
-					}
-					row[ colIndex ] = col;
+					const colValue = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
+					row[ colIndex ] = colValue;
 				} );
-				if ( currentRowEmpty ) {
-					newChartData.splice( rowIndex, 1 );
-				}
-				currentRowEmpty = true;
+				emptyRows[ rowIndex ] = currentRowEmpty;
 			} );
+
+			let offset = 0;
+
+			emptyRows.map( ( row, rowIndex ) => {
+				if ( row ) {
+					newChartData.splice( rowIndex - offset, 1 );
+					offset++;
+				}
+			} );
+
+			offset = 0;
+
 			emptyColumns.map( ( col, colIndex ) => {
 				if ( col ) {
 					newChartData.map( ( row ) => {
@@ -105,6 +113,7 @@ registerBlockType( 'gutengraphs/barchart', {
 					offset++;
 				}
 			} );
+
 			props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
 		};
 
