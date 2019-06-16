@@ -8,6 +8,8 @@ class DataModal extends Component {
 	constructor( props ) {
 		super( props );
 
+		this.emailInput = React.createRef();
+
 		this.state = {
 			isOpen: false,
 			cols: 5,
@@ -43,10 +45,12 @@ class DataModal extends Component {
 							<p>Empty rows and columns are cleared on graph update. To create a new row or column, focus the last cell in a row or column and navigate down or to the right respectively.</p>
 						</div>
 						<div className="gutengraphs-datasheet">
-							<SpreadsheetComponent initialData={ this.state.chartData } config={ config } />
+							<SpreadsheetComponent initialData={ this.state.chartData } config={ config } ref={ this.emailInput } />
 						</div>
 						<div className="gutengraphs-datasheet-ui">
-							<Button isDefault isPrimary onClick={ () => this.props.handleUpdateChartData( this.state.chartData.rows ) }>Update Graph Data</Button>
+							<Button isDefault isPrimary onClick={ () => {
+								this.props.handleUpdateChartData( this.state.chartData.rows );
+							} }>Update Graph Data</Button>
 						</div>
 					</Modal>
 				) }
