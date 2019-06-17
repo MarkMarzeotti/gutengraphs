@@ -31,39 +31,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 function gutengraphs_block_assets() { // phpcs:ignore
 	// Register block styles for both frontend + backend.
 	wp_register_style(
-		'gutengraphs-style-css', // Handle.
-		plugins_url( 'dist/blocks.style.build.css', dirname( __FILE__ ) ), // Block style CSS.
-		array( 'wp-editor' ), // Dependency to include the CSS after it.
-		null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: File modification time.
+		'gutengraphs-style-css',
+		plugins_url( 'dist/blocks.style.build.css', dirname( __FILE__ ) ),
+		array( 'wp-editor' ),
+		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' )
 	);
 
 	// Register block editor script for backend.
 	wp_register_script(
-		'gutengraphs-block-js', // Handle.
-		plugins_url( '/dist/blocks.build.js', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
-		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ), // Dependencies, defined above.
-		null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
-		true // Enqueue the script in the footer.
+		'gutengraphs-block-js',
+		plugins_url( '/dist/blocks.build.js', dirname( __FILE__ ) ),
+		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ),
+		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ),
+		false
 	);
 
 	// Register block editor styles for backend.
 	wp_register_style(
-		'gutengraphs-block-editor-css', // Handle.
-		plugins_url( 'dist/blocks.editor.build.css', dirname( __FILE__ ) ), // Block editor CSS.
-		array( 'wp-edit-blocks' ), // Dependency to include the CSS after it.
-		null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: File modification time.
+		'gutengraphs-block-editor-css',
+		plugins_url( 'dist/blocks.editor.build.css', dirname( __FILE__ ) ),
+		array( 'wp-edit-blocks' ),
+		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' )
 	);
 
-	/**
-	 * Register Gutenberg block on server-side.
-	 *
-	 * Register the block on server-side to ensure that the block
-	 * scripts and styles for both frontend and backend are
-	 * enqueued when the editor loads.
-	 *
-	 * @link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type#enqueuing-block-scripts
-	 * @since 1.16.0
-	 */
+	// Register Gutenberg block on server-side.
 	register_block_type(
 		'gutengraphs/barchart', array(
 			// Enqueue blocks.style.build.css on both frontend & backend.
@@ -79,7 +70,6 @@ function gutengraphs_block_assets() { // phpcs:ignore
 	wp_enqueue_script( 'google-charts' );
 }
 
-// Hook: Block assets.
 add_action( 'init', 'gutengraphs_block_assets' );
 
 /**
@@ -87,25 +77,27 @@ add_action( 'init', 'gutengraphs_block_assets' );
  *
  * Assets enqueued:
  * 1. Google Charts.
+ * 2. common.js
  * 
  * @since 1.0.0
  */
 function gutengraphs_block_frontend_assets() { // phpcs:ignore
 	// Register Google Charts script.
 	wp_register_script(
-		'google-charts-loader', // Handle.
-		'https://www.gstatic.com/charts/loader.js',  // Block.build.js: We register the block here. Built with Webpack.
-		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'gutengraphs-block-js' ), // Dependency to include the CSS after it.
-		null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
-		true // Enqueue the script in the footer.
+		'google-charts-loader',
+		'https://www.gstatic.com/charts/loader.js',
+		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'gutengraphs-block-js' ), // !! this may be able to come out
+		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ),
+		true
 	);
 
+	// Register script that creates individual charts.
 	wp_register_script(
-		'google-charts', // Handle.
-		plugins_url( 'src/common.js', dirname( __FILE__ ) ),  // Block.build.js: We register the block here. Built with Webpack.
-		array( 'google-charts-loader' ), // Dependency to include the CSS after it.
-		null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
-		true // Enqueue the script in the footer.
+		'google-charts',
+		plugins_url( 'src/common.js', dirname( __FILE__ ) ), // !! this should be minified. need to edit webpack config.
+		array( 'google-charts-loader' ),
+		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ),
+		true
 	);
 
 	wp_enqueue_script( 'google-charts-loader' );
@@ -113,3 +105,22 @@ function gutengraphs_block_frontend_assets() { // phpcs:ignore
 }
 
 add_action( 'wp_enqueue_scripts', 'gutengraphs_block_frontend_assets' );
+
+/**
+ * Add block category for Graphs.
+ * 
+ * @since 1.0.0
+ */
+function gutengraphs_add_block_category( $categories, $post ) {
+	return array_merge(
+		$categories,
+		array(
+			array(
+				'slug' => 'gutengraphs',
+				'title' => __( 'Graphs', 'gutengraphs' ),
+			),
+		)
+	);
+}
+
+add_filter( 'block_categories', 'gutengraphs_add_block_category', 10, 2);
