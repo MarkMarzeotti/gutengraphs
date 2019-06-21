@@ -73,40 +73,6 @@ function gutengraphs_block_assets() { // phpcs:ignore
 add_action( 'init', 'gutengraphs_block_assets' );
 
 /**
- * Enqueue Gutenberg block assets for frontend.
- *
- * Assets enqueued:
- * 1. Google Charts.
- * 2. common.js
- * 
- * @since 1.0.0
- */
-function gutengraphs_block_frontend_assets() { // phpcs:ignore
-	// Register Google Charts script.
-	wp_register_script(
-		'google-charts-loader',
-		'https://www.gstatic.com/charts/loader.js',
-		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'gutengraphs-block-js' ), // !! this may be able to come out
-		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ),
-		true
-	);
-
-	// Register script that creates individual charts.
-	wp_register_script(
-		'google-charts',
-		plugins_url( 'src/common.js', dirname( __FILE__ ) ), // !! this should be minified. need to edit webpack config.
-		array( 'google-charts-loader' ),
-		filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ),
-		true
-	);
-
-	wp_enqueue_script( 'google-charts-loader' );
-	wp_enqueue_script( 'google-charts' );
-}
-
-add_action( 'wp_enqueue_scripts', 'gutengraphs_block_frontend_assets' );
-
-/**
  * Add block category for Graphs.
  * 
  * @since 1.0.0

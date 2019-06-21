@@ -25,7 +25,7 @@ const { registerBlockType } = wp.blocks;
 registerBlockType( 'gutengraphs/barchart', {
 	title: __( 'Bar Chart' ),
 	icon: 'shield',
-	category: 'gutengraphs',
+	category: 'common',
 	attributes: {
 		chartTitle: {
 			selector: 'div',
@@ -54,97 +54,127 @@ registerBlockType( 'gutengraphs/barchart', {
 		__( 'chart' ),
 		__( 'graph' ),
 	],
-	edit: function( props ) {
-		const chartData = ( props.attributes.chartData ) ? JSON.parse( props.attributes.chartData ) : [
-			[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
-			[ '2014', 1000, 400, 200 ],
-			[ '2015', 1170, 460, 250 ],
-			[ '2016', 660, 1120, 300 ],
-			[ '2017', 1030, 540, 350 ],
-		];
+	edit: class extends wp.element.Component {
+		constructor() {
+			super( ...arguments );
 
-		const handleUpdateChartData = ( newChartData ) => {
-			const emptyRows = [];
-			const emptyColumns = [];
+			this.state = {
+				saveChartData: false,
+			};
+		}
 
-			newChartData[ 0 ].map( ( col, colIndex ) => {
-				emptyColumns[ colIndex ] = col ? false : true;
-			} );
+		// componentDidMount() {
+		// 	const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"]' ).innerHTML;
+		// 	this.props.setAttributes( { renderedChart: renderedChart } );
+		// }
 
-			newChartData.map( ( row, rowIndex ) => {
-				let currentRowEmpty = true;
-				row.map( ( col, colIndex ) => {
-					if ( col ) {
-						currentRowEmpty = false;
-						emptyColumns[ colIndex ] = false;
-					}
-					const colValue = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
-					row[ colIndex ] = colValue;
+		componentDidUpdate() {
+			if ( this.state.saveChartData ) {
+				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"]' ).innerHTML;
+				this.props.setAttributes( { renderedChart: renderedChart } );
+				this.setState( { saveChartData: false } );
+			}
+		}
+
+		render() {
+			const chartData = ( this.props.attributes.chartData ) ? JSON.parse( this.props.attributes.chartData ) : [
+				[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
+				[ '2014', 1000, 400, 200 ],
+				[ '2015', 1170, 460, 250 ],
+				[ '2016', 660, 1120, 300 ],
+				[ '2017', 1030, 540, 350 ],
+			];
+
+			const handleUpdateChartData = ( newChartData ) => {
+				const emptyRows = [];
+				const emptyColumns = [];
+
+				newChartData[ 0 ].map( ( col, colIndex ) => {
+					emptyColumns[ colIndex ] = col ? false : true;
 				} );
-				emptyRows[ rowIndex ] = currentRowEmpty;
-			} );
 
-			let offset = 0;
-
-			emptyRows.map( ( row, rowIndex ) => {
-				if ( row ) {
-					newChartData.splice( rowIndex - offset, 1 );
-					offset++;
-				}
-			} );
-
-			offset = 0;
-
-			emptyColumns.map( ( col, colIndex ) => {
-				if ( col ) {
-					newChartData.map( ( row ) => {
-						row.splice( colIndex - offset, 1 );
+				newChartData.map( ( row, rowIndex ) => {
+					let currentRowEmpty = true;
+					row.map( ( col, colIndex ) => {
+						if ( col ) {
+							currentRowEmpty = false;
+							emptyColumns[ colIndex ] = false;
+						}
+						const colValue = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
+						row[ colIndex ] = colValue;
 					} );
-					offset++;
-				}
-			} );
+					emptyRows[ rowIndex ] = currentRowEmpty;
+				} );
 
-			props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
-		};
+				let offset = 0;
 
-		return [
-			<InspectorControls key="1">
-				<PanelBody title={ __( 'Settings' ) }>
-					<TextControl
-						id="chart-title"
-						format="string"
-						label={ __( 'Title' ) }
-						onChange={ ( content ) => props.setAttributes( { chartTitle: content } ) }
-						value={ props.attributes.chartTitle }
-					/>
-					<TextControl
-						id="chart-subtitle"
-						format="string"
-						label={ __( 'Subtitle' ) }
-						onChange={ ( content ) => props.setAttributes( { chartSubtitle: content } ) }
-						value={ props.attributes.chartSubtitle }
-					/>
-				</PanelBody>
-				<PanelBody title={ __( 'Graph Data' ) }>
-					<DataModal
-						title={ props.attributes.chartTitle }
-						chartData={ chartData }
-						handleUpdateChartData={ handleUpdateChartData }
-					/>
-				</PanelBody>
-			</InspectorControls>,
-			<div className={ props.className } key="2">
-				<Chart
-					chartType="Bar"
-					data={ chartData }
-					options={ {
-						chart: {
-							title: props.attributes.chartTitle,
-							subtitle: props.attributes.chartSubtitle,
-						},
-					} } />
-			</div>,
-		];
+				emptyRows.map( ( row, rowIndex ) => {
+					if ( row ) {
+						newChartData.splice( rowIndex - offset, 1 );
+						offset++;
+					}
+				} );
+
+				offset = 0;
+
+				emptyColumns.map( ( col, colIndex ) => {
+					if ( col ) {
+						newChartData.map( ( row ) => {
+							row.splice( colIndex - offset, 1 );
+						} );
+						offset++;
+					}
+				} );
+
+				this.props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
+				this.setState( { saveChartData: true } );
+			};
+
+			return [
+				<InspectorControls key="1">
+					<PanelBody title={ __( 'Settings' ) }>
+						<TextControl
+							id="chart-title"
+							format="string"
+							label={ __( 'Title' ) }
+							onChange={ ( content ) => {
+								this.props.setAttributes( { chartTitle: content } );
+								this.setState( { saveChartData: true } );
+							} }
+							value={ this.props.attributes.chartTitle }
+						/>
+						<TextControl
+							id="chart-subtitle"
+							format="string"
+							label={ __( 'Subtitle' ) }
+							onChange={ ( content ) => {
+								this.props.setAttributes( { chartSubtitle: content } );
+								this.setState( { saveChartData: true } );
+							} }
+							value={ this.props.attributes.chartSubtitle }
+						/>
+					</PanelBody>
+					<PanelBody title={ __( 'Graph Data' ) }>
+						<DataModal
+							title={ this.props.attributes.chartTitle }
+							chartData={ chartData }
+							handleUpdateChartData={ handleUpdateChartData }
+						/>
+					</PanelBody>
+				</InspectorControls>,
+				<div className={ this.props.className } key="2">
+					<Chart
+						chartType="Bar"
+						data={ chartData }
+						options={ {
+							chart: {
+								title: this.props.attributes.chartTitle,
+								subtitle: this.props.attributes.chartSubtitle,
+							},
+						} } />
+				</div>,
+			];
+		}
 	},
 	save: function( props ) {
 		return (
@@ -152,8 +182,8 @@ registerBlockType( 'gutengraphs/barchart', {
 				id="barchart_material"
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
-				data-content={ props.attributes.chartData }>
-			</div>
+				data-content={ props.attributes.chartData }
+				dangerouslySetInnerHTML={ { __html: props.attributes.renderedChart } } />
 		);
 	},
 } );
