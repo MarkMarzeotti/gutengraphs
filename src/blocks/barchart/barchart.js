@@ -42,6 +42,12 @@ registerBlockType( 'gutengraphs/barchart', {
 			source: 'attribute',
 			attribute: 'data-content',
 		},
+		renderedChart: {
+			type: 'array',
+			source: 'children',
+			selector: 'div',
+			default: [],
+		},
 	},
 	keywords: [
 		__( 'bar chart' ),
@@ -120,7 +126,11 @@ registerBlockType( 'gutengraphs/barchart', {
 					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Graph Data' ) }>
-					<DataModal title={ props.attributes.chartTitle } chartData={ chartData } handleUpdateChartData={ handleUpdateChartData } />
+					<DataModal
+						title={ props.attributes.chartTitle }
+						chartData={ chartData }
+						handleUpdateChartData={ handleUpdateChartData }
+					/>
 				</PanelBody>
 			</InspectorControls>,
 			<div className={ props.className } key="2">
@@ -142,7 +152,8 @@ registerBlockType( 'gutengraphs/barchart', {
 				id="barchart_material"
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
-				data-content={ props.attributes.chartData }></div>
+				data-content={ props.attributes.chartData }>
+			</div>
 		);
 	},
 } );
