@@ -71,6 +71,7 @@ registerBlockType( 'gutengraphs/barchart', {
 			};
 		}
 
+		// saving chart output does not preserve chart interactivity which some users may prefer
 		componentDidMount() {
 			setTimeout( () => {
 				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"] svg' ).outerHTML;
