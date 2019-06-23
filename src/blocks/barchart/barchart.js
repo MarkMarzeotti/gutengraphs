@@ -3,7 +3,6 @@
  */
 
 import Chart from 'react-google-charts';
-
 import DataModal from '../../components/modal';
 
 import './style.scss';
@@ -13,6 +12,18 @@ const { __ } = wp.i18n;
 const { InspectorControls } = wp.editor;
 const { PanelBody, TextControl } = wp.components;
 const { registerBlockType } = wp.blocks;
+const { Component } = wp.element;
+
+const icon = <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 480 480">
+	<path style={ { fill: '#1E88E5' } } d="M432,16h-64c-8.832,0-16,7.168-16,16v400c0,8.832,7.168,16,16,16h64c8.832,0,16-7.168,16-16V32
+	C448,23.168,440.832,16,432,16z" />
+	<path style={ { fill: '#2196F3' } } d="M272,240h-64c-8.832,0-16,7.168-16,16v176c0,8.832,7.168,16,16,16h64c8.832,0,16-7.168,16-16V256
+	C288,247.168,280.832,240,272,240z" />
+	<path style={ { fill: '#64B5F6' } } d="M112,144H48c-8.832,0-16,7.168-16,16v272c0,8.832,7.168,16,16,16h64c8.832,0,16-7.168,16-16V160
+	C128,151.168,120.832,144,112,144z" />
+	<path style={ { fill: '#455A64' } } d="M464,464H16c-8.832,0-16-7.168-16-16s7.168-16,16-16h448c8.832,0,16,7.168,16,16S472.832,464,464,464
+	z" />
+</svg>;
 
 /*
  * Register: Bar Chart Gutenberg Block.
@@ -24,8 +35,8 @@ const { registerBlockType } = wp.blocks;
  */
 registerBlockType( 'gutengraphs/barchart', {
 	title: __( 'Bar Chart' ),
-	icon: 'shield',
-	category: 'common',
+	icon: icon,
+	category: 'gutengraphs',
 	attributes: {
 		chartTitle: {
 			selector: 'div',
@@ -43,10 +54,7 @@ registerBlockType( 'gutengraphs/barchart', {
 			attribute: 'data-content',
 		},
 		renderedChart: {
-			type: 'array',
-			source: 'children',
-			selector: 'div',
-			default: [],
+			type: 'string',
 		},
 	},
 	keywords: [
@@ -54,7 +62,7 @@ registerBlockType( 'gutengraphs/barchart', {
 		__( 'chart' ),
 		__( 'graph' ),
 	],
-	edit: class extends wp.element.Component {
+	edit: class extends Component {
 		constructor() {
 			super( ...arguments );
 
@@ -63,16 +71,19 @@ registerBlockType( 'gutengraphs/barchart', {
 			};
 		}
 
-		// componentDidMount() {
-		// 	const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"]' ).innerHTML;
-		// 	this.props.setAttributes( { renderedChart: renderedChart } );
-		// }
+		componentDidMount() {
+			setTimeout( () => {
+				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"] svg' ).outerHTML;
+				this.setState( { renderedChart: renderedChart } );
+				this.props.setAttributes( { renderedChart: renderedChart } );
+			}, 3000 );
+		}
 
 		componentDidUpdate() {
 			if ( this.state.saveChartData ) {
-				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"]' ).innerHTML;
-				this.props.setAttributes( { renderedChart: renderedChart } );
+				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"] svg' ).outerHTML;
 				this.setState( { saveChartData: false } );
+				this.props.setAttributes( { renderedChart: renderedChart } );
 			}
 		}
 
@@ -179,7 +190,7 @@ registerBlockType( 'gutengraphs/barchart', {
 	save: function( props ) {
 		return (
 			<div
-				id="barchart_material"
+				className={ props.className }
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
 				data-content={ props.attributes.chartData }
