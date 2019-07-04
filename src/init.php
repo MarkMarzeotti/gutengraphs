@@ -69,8 +69,35 @@ function gutengraphs_block_assets() { // phpcs:ignore
 	wp_enqueue_script( 'google-charts-loader' );
 	wp_enqueue_script( 'google-charts' );
 }
-
 add_action( 'init', 'gutengraphs_block_assets' );
+
+/**
+ * Enqueue Gutenberg block assets for frontend.
+ *
+ * Assets enqueued:
+ * 1. Google Charts.
+ * 
+ * @since 1.0.0
+ */
+function gutengraphs_block_frontend_assets() {
+	wp_register_script(
+		'google-charts-loader',
+		'https://www.gstatic.com/charts/loader.js',
+		array(),
+		null,
+		true
+	);
+	wp_register_script(
+		'google-charts',
+		plugins_url( 'src/common.js', dirname( __FILE__ ) ),
+		array( 'google-charts-loader' ),
+		null,
+		true
+	);
+	wp_enqueue_script( 'google-charts-loader' );
+	wp_enqueue_script( 'google-charts' );
+}
+add_action( 'wp_enqueue_scripts', 'gutengraphs_block_frontend_assets' );
 
 /**
  * Add block category for Graphs.
@@ -82,11 +109,10 @@ function gutengraphs_add_block_category( $categories, $post ) {
 		$categories,
 		array(
 			array(
-				'slug' => 'gutengraphs',
+				'slug' => 'graphs',
 				'title' => __( 'Graphs', 'gutengraphs' ),
 			),
 		)
 	);
 }
-
 add_filter( 'block_categories', 'gutengraphs_add_block_category', 10, 2);

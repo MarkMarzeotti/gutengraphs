@@ -36,7 +36,7 @@ const icon = <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x
 registerBlockType( 'gutengraphs/barchart', {
 	title: __( 'Bar Chart' ),
 	icon: icon,
-	category: 'gutengraphs',
+	category: 'graphs',
 	attributes: {
 		chartTitle: {
 			selector: 'div',
@@ -48,6 +48,9 @@ registerBlockType( 'gutengraphs/barchart', {
 			source: 'attribute',
 			attribute: 'data-subtitle',
 		},
+		// saveSVG: {
+		// 	type: 'boolean',
+		// },
 		chartData: {
 			selector: 'div',
 			source: 'attribute',
@@ -69,9 +72,21 @@ registerBlockType( 'gutengraphs/barchart', {
 			this.state = {
 				saveChartData: false,
 			};
+
+			if ( this.props.attributes.chartData ) {
+				this.state.chartData = JSON.parse( this.props.attributes.chartData );
+			} else {
+				this.state.chartData = [
+					[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
+					[ '2014', 1000, 400, 200 ],
+					[ '2015', 1170, 460, 250 ],
+					[ '2016', 660, 1120, 300 ],
+					[ '2017', 1030, 540, 350 ],
+				];
+				this.props.setAttributes( { chartData: JSON.stringify( this.state.chartData ) } );
+			}
 		}
 
-		// saving chart output does not preserve chart interactivity which some users may prefer
 		componentDidMount() {
 			setTimeout( () => {
 				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"] svg' ).outerHTML;
@@ -88,63 +103,62 @@ registerBlockType( 'gutengraphs/barchart', {
 			}
 		}
 
-		render() {
-			const chartData = ( this.props.attributes.chartData ) ? JSON.parse( this.props.attributes.chartData ) : [
-				[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
-				[ '2014', 1000, 400, 200 ],
-				[ '2015', 1170, 460, 250 ],
-				[ '2016', 660, 1120, 300 ],
-				[ '2017', 1030, 540, 350 ],
-			];
+		handleUpdateChartData = ( newChartData ) => {
+			const emptyRows = [];
+			const emptyColumns = [];
 
-			const handleUpdateChartData = ( newChartData ) => {
-				const emptyRows = [];
-				const emptyColumns = [];
+			newChartData[ 0 ].map( ( col, colIndex ) => {
+				emptyColumns[ colIndex ] = col ? false : true;
+			} );
 
-				newChartData[ 0 ].map( ( col, colIndex ) => {
-					emptyColumns[ colIndex ] = col ? false : true;
-				} );
-
-				newChartData.map( ( row, rowIndex ) => {
-					let currentRowEmpty = true;
-					row.map( ( col, colIndex ) => {
-						if ( col ) {
-							currentRowEmpty = false;
-							emptyColumns[ colIndex ] = false;
-						}
-						const colValue = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
-						row[ colIndex ] = colValue;
-					} );
-					emptyRows[ rowIndex ] = currentRowEmpty;
-				} );
-
-				let offset = 0;
-
-				emptyRows.map( ( row, rowIndex ) => {
-					if ( row ) {
-						newChartData.splice( rowIndex - offset, 1 );
-						offset++;
-					}
-				} );
-
-				offset = 0;
-
-				emptyColumns.map( ( col, colIndex ) => {
+			newChartData.map( ( row, rowIndex ) => {
+				let currentRowEmpty = true;
+				row.map( ( col, colIndex ) => {
 					if ( col ) {
-						newChartData.map( ( row ) => {
-							row.splice( colIndex - offset, 1 );
-						} );
-						offset++;
+						currentRowEmpty = false;
+						emptyColumns[ colIndex ] = false;
 					}
+					const colValue = ( rowIndex === 0 || colIndex === 0 ) ? String( col ) : Number( col );
+					row[ colIndex ] = colValue;
 				} );
+				emptyRows[ rowIndex ] = currentRowEmpty;
+			} );
 
-				this.props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
-				this.setState( { saveChartData: true } );
-			};
+			let offset = 0;
 
+			emptyRows.map( ( row, rowIndex ) => {
+				if ( row ) {
+					newChartData.splice( rowIndex - offset, 1 );
+					offset++;
+				}
+			} );
+
+			offset = 0;
+
+			emptyColumns.map( ( col, colIndex ) => {
+				if ( col ) {
+					newChartData.map( ( row ) => {
+						row.splice( colIndex - offset, 1 );
+					} );
+					offset++;
+				}
+			} );
+
+			this.props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
+			this.setState( { saveChartData: true } );
+		}
+
+		render() {
 			return [
 				<InspectorControls key="1">
 					<PanelBody title={ __( 'Settings' ) }>
+						{ /*<ToggleControl
+							id="chart-display"
+							label={ __( 'Save as interactive chart or SVG' ) }
+							help={ this.props.attributes.saveSVG ? __( 'Save as interactive chart.' ) : __( 'Save as SVG.' ) } 
+							checked={ this.props.attributes.saveSVG }
+							onChange={ () => this.props.setAttributes( { saveSVG: ! this.props.attributes.saveSVG } ) }
+						/>*/ }
 						<TextControl
 							id="chart-title"
 							format="string"
@@ -169,15 +183,15 @@ registerBlockType( 'gutengraphs/barchart', {
 					<PanelBody title={ __( 'Graph Data' ) }>
 						<DataModal
 							title={ this.props.attributes.chartTitle }
-							chartData={ chartData }
-							handleUpdateChartData={ handleUpdateChartData }
+							chartData={ this.state.chartData }
+							handleUpdateChartData={ this.handleUpdateChartData }
 						/>
 					</PanelBody>
 				</InspectorControls>,
 				<div className={ this.props.className } key="2">
 					<Chart
 						chartType="Bar"
-						data={ chartData }
+						data={ this.state.chartData }
 						options={ {
 							chart: {
 								title: this.props.attributes.chartTitle,
@@ -191,11 +205,13 @@ registerBlockType( 'gutengraphs/barchart', {
 	save: function( props ) {
 		return (
 			<div
+				id="barchart_material"
 				className={ props.className }
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
 				data-content={ props.attributes.chartData }
-				dangerouslySetInnerHTML={ { __html: props.attributes.renderedChart } } />
+				dangerouslySetInnerHTML={ { __html: props.attributes.renderedChart } }
+			/>
 		);
 	},
 } );

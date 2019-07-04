@@ -5,6 +5,32 @@
  * which makes it higher in priority.
  */
 
+// .components-toggle-control {
+// 	position: relative;
+// 	padding-top: 26px;
+
+// 	&__label {
+// 		position: absolute;
+// 		top: 0;
+// 		left: 0;
+// 	}
+
+// 	.components-base-control {
+
+// 		&__field {
+// 			display: inline-block;
+// 			margin-bottom: 0;
+// 		}
+
+// 		&__help {
+// 			display: inline-block;
+// 			margin-bottom: 0;
+// 			margin-top: 0;
+// 			width: calc( 100% - 52px );
+// 		}
+// 	}
+// }
+
 .wp-block-gutengraphs-barchart {
 	padding-right: 40px;
 }
