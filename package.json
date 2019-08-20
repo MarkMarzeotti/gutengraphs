@@ -15,5 +15,8 @@
     "react-dom": "^16.8.6",
     "react-google-charts": "^3.0.13",
     "react-spreadsheet-component": "^1.0.2"
+  },
+  "devDependencies": {
+    "jexcel": "^3.3.6"
   }
 }
