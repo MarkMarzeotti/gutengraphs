@@ -2,7 +2,8 @@ import { Component } from 'react';
 
 const { Button, Modal } = wp.components;
 
-import SpreadsheetComponent from 'react-spreadsheet-component';
+// import SpreadsheetComponent from 'react-spreadsheet-component';
+import Spread from './spread';
 
 // jexcel import
 // import Spreadsheet from './spreadsheet';
@@ -65,8 +66,9 @@ class DataModal extends Component {
 							<p>Empty rows and columns are cleared on graph update. To create a new row or column, focus the last cell in a row or column and navigate down or to the right respectively.</p>
 						</div>
 						<div className="gutengraphs-datasheet">
-							<SpreadsheetComponent initialData={ this.state.chartData } config={ config } />
+							{/* <SpreadsheetComponent initialData={ this.state.chartData } config={ config } /> */}
 							{ /* <Spreadsheet options={ options } /> */ }
+							<Spread chartData={ this.props.chartData } />
 						</div>
 						<div className="gutengraphs-datasheet-ui">
 							<Button isDefault isPrimary onClick={ () => {
