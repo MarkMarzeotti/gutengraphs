@@ -78,6 +78,27 @@ class Spreadsheet extends Component {
 		this.setState( { grid } );
 	}
 
+	handleRemoveRow = () => {
+		const grid = [ ...this.state.grid ];
+
+		const rowsToDelete = this.state.cell.start.i - this.state.cell.end.i + 1;
+		grid.splice( this.state.cell.start.i, rowsToDelete );
+
+		this.setState( { grid } );
+	}
+
+	handleRemoveCol = () => {
+		let grid = [ ...this.state.grid ];
+
+		const colsToDelete = this.state.cell.start.j - this.state.cell.end.j + 1;
+		grid = grid.map( row => {
+			row.splice( this.state.cell.start.j, colsToDelete );
+			return row;
+		} );
+
+		this.setState( { grid } );
+	}
+
 	handleLargePaste() {
 
 	}
@@ -94,6 +115,10 @@ class Spreadsheet extends Component {
 					<Button isDefault isSmall onClick={ () => this.handleAddCol( 0 ) }>Add Column Left</Button>
 					<Button isDefault isSmall onClick={ () => this.handleAddCol( 1 ) }>Add Column Right</Button>
 				</div>
+				<div className="gutengraphs-datasheet__buttons">
+					<Button isDefault isSmall onClick={ () => this.handleRemoveRow() }>Remove Row(s)</Button>
+					<Button isDefault isSmall onClick={ () => this.handleRemoveCol() }>Remove Column(s)</Button>
+				</div>
 				<ReactDataSheet
 					ref={ this.myRef }
 					data={ this.state.grid }
@@ -107,11 +132,11 @@ class Spreadsheet extends Component {
 						if ( overflow !== null ) {
 							console.log( overflow );
 						}
+
 						this.setState( { grid } );
 					} }
 					onSelect={ cell => {
 						this.setState( { cell } );
-						console.log( cell );
 					} }
 				/>
 			</Fragment>
