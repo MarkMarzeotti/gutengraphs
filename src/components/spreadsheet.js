@@ -20,16 +20,70 @@ class Spreadsheet extends Component {
 		};
 	}
 
+	handleCellChange( changes, overflow = [] ) {
+		let maxCol = 0;
+		let maxRow = 0;
+		let difference = 0;
+
+		let grid = [ ...this.state.grid ];
+
+		// apply the changes in cells currently available
+		changes.forEach( ( { row, col, value } ) => {
+			grid[ row ][ col ] = { ...grid[ row ][ col ], value };
+		} );
+
+		if ( overflow.length ) {
+			// determine necessary rows and cols to fit full paste
+			overflow.map( cell => {
+				maxCol = cell.col > maxCol ? cell.col : maxCol;
+				maxRow = cell.row > maxRow ? cell.row : maxRow;
+			} );
+
+			// determine number of aditional rows and add them with empty values
+			difference = maxRow - grid.length + 1;
+			if ( difference ) {
+				const newRow = grid[ 0 ].map( () => {
+					return { value: null };
+				} );
+
+				for ( difference; difference !== 0; difference-- ) {
+					grid = [ ...grid, newRow ];
+				}
+			}
+
+			// determine number of aditional cols and add them with empty values
+			difference = maxCol - grid[ 0 ].length + 1;
+			if ( difference ) {
+				let newCol = [];
+
+				for ( difference; difference !== 0; difference-- ) {
+					newCol = [ ...newCol, { value: null } ];
+				}
+
+				grid = grid.map( row => {
+					return [ ...row, ...newCol ];
+				} );
+			}
+
+			// apply the changes in cells recently made available
+			overflow.forEach( ( { row, col, value } ) => {
+				grid[ row ][ col ] = { ...grid[ row ][ col ], value };
+			} );
+		}
+
+		this.setState( { grid } );
+	}
+
 	handleAddRow = below => {
 		let grid = [ ...this.state.grid ];
 
-		const newRow = grid[ 0 ].map( row => {
+		const newRow = grid[ 0 ].map( () => {
 			return { value: null };
 		} );
 
 		if ( below && this.state.cell.end.i === this.state.grid.length - 1 ) {
 			grid = [ ...grid, newRow ];
-			// need to recalc cell here so user is allowed to add multiple rows
+			// set selected cell to last cell in col when adding to bottom
 			const cell = { ...this.state.cell };
 			cell.end.i = this.state.grid.length;
 			this.setState( { cell } );
@@ -53,7 +107,7 @@ class Spreadsheet extends Component {
 			grid = grid.map( row => {
 				return [ ...row, { value: null } ];
 			} );
-			// need to recalc cell here so user is allowed to add multiple cols
+			// set selected cell to last cell in row when adding to the right
 			const cell = { ...this.state.cell };
 			cell.end.j = this.state.grid[ 0 ].length;
 			this.setState( { cell } );
@@ -81,7 +135,7 @@ class Spreadsheet extends Component {
 	handleRemoveRow = () => {
 		const grid = [ ...this.state.grid ];
 
-		const rowsToDelete = this.state.cell.start.i - this.state.cell.end.i + 1;
+		const rowsToDelete = this.state.cell.end.i - this.state.cell.start.i + 1;
 		grid.splice( this.state.cell.start.i, rowsToDelete );
 
 		this.setState( { grid } );
@@ -90,7 +144,7 @@ class Spreadsheet extends Component {
 	handleRemoveCol = () => {
 		let grid = [ ...this.state.grid ];
 
-		const colsToDelete = this.state.cell.start.j - this.state.cell.end.j + 1;
+		const colsToDelete = this.state.cell.end.j - this.state.cell.start.j + 1;
 		grid = grid.map( row => {
 			row.splice( this.state.cell.start.j, colsToDelete );
 			return row;
@@ -98,13 +152,6 @@ class Spreadsheet extends Component {
 
 		this.setState( { grid } );
 	}
-
-	handleLargePaste() {
-
-	}
-
-	// handle larger paste
-	// hook up to graph
 
 	render() {
 		return (
@@ -120,24 +167,10 @@ class Spreadsheet extends Component {
 					<Button isDefault isSmall onClick={ () => this.handleRemoveCol() }>Remove Column(s)</Button>
 				</div>
 				<ReactDataSheet
-					ref={ this.myRef }
 					data={ this.state.grid }
 					valueRenderer={ ( cell ) => cell.value }
-					onCellsChanged={ ( changes, overflow = null ) => {
-						const grid = this.state.grid.map( row => [ ...row ] );
-						changes.forEach( ( { cell, row, col, value } ) => {
-							grid[ row ][ col ] = { ...grid[ row ][ col ], value };
-						} );
-
-						if ( overflow !== null ) {
-							console.log( overflow );
-						}
-
-						this.setState( { grid } );
-					} }
-					onSelect={ cell => {
-						this.setState( { cell } );
-					} }
+					onCellsChanged={ ( changes, overflow ) => this.handleCellChange( changes, overflow ) }
+					onSelect={ cell => this.setState( { cell } ) }
 				/>
 			</Fragment>
 		);

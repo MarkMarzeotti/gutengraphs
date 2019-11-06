@@ -93,38 +93,34 @@ span.data-grid-container, span.data-grid-container:focus {
 .wp-block-gutengraphs-barchart {
   padding-right: 40px; }
 
-.gutengraphs-datasheet-instructions {
+.gutengraphs-datasheet__buttons {
+  margin-bottom: 20px; }
+  .gutengraphs-datasheet__buttons button {
+    margin-right: 10px; }
+
+.gutengraphs-datasheet__instructions {
   margin-bottom: 15px; }
 
-.gutengraphs-datasheet-ui {
-  text-align: right; }
-  .gutengraphs-datasheet-ui button {
-    margin-left: 10px; }
-
-.gutengraphs-datasheet {
+.gutengraphs-datasheet__spreadsheet {
   margin-bottom: 15px; }
-  .gutengraphs-datasheet__buttons {
-    margin-bottom: 20px; }
-    .gutengraphs-datasheet__buttons button {
-      margin-right: 10px; }
-  .gutengraphs-datasheet table {
+  .gutengraphs-datasheet__spreadsheet table {
     border-collapse: collapse;
     border-spacing: 0;
     outline: none; }
-    .gutengraphs-datasheet table input {
+    .gutengraphs-datasheet__spreadsheet table input {
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
       left: 0; }
-    .gutengraphs-datasheet table span {
+    .gutengraphs-datasheet__spreadsheet table span {
       background-color: transparent;
       display: block;
       font-size: 12px;
       margin: 0;
       min-height: 28px;
       padding: 4px; }
-    .gutengraphs-datasheet table input {
+    .gutengraphs-datasheet__spreadsheet table input {
       -webkit-appearance: none;
          -moz-appearance: none;
               appearance: none;
@@ -135,7 +131,12 @@ span.data-grid-container, span.data-grid-container:focus {
       max-width: 100%;
       padding: 4px;
       outline: none; }
-    .gutengraphs-datasheet table tr td {
+    .gutengraphs-datasheet__spreadsheet table tr td {
       min-width: 60px;
       padding: 0;
       position: relative; }
+
+.gutengraphs-datasheet__ui {
+  text-align: right; }
+  .gutengraphs-datasheet__ui button {
+    margin-left: 10px; }

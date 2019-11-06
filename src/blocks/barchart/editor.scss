@@ -127,20 +127,7 @@ span.data-grid-container, span.data-grid-container:focus {
 	padding-right: 40px;
 }
 
-.gutengraphs-datasheet-instructions {
-	margin-bottom: 15px;
-}
-
-.gutengraphs-datasheet-ui {
-	text-align: right;
-
-	button {
-		margin-left: 10px;
-	}
-}
-
 .gutengraphs-datasheet {
-	margin-bottom: 15px;
 
 	&__buttons {
 		margin-bottom: 20px;
@@ -150,72 +137,88 @@ span.data-grid-container, span.data-grid-container:focus {
 		}
 	}
 
-	table {
-		border-collapse: collapse;
-		border-spacing: 0;
-		outline: none;
+	&__instructions {
+		margin-bottom: 15px;
+	}
 
-		input {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-		}
+	&__spreadsheet {
+		margin-bottom: 15px;
 
-		span {
-			background-color: transparent;
-			// border: 2px solid transparent;
-			display: block;
-			font-size: 12px;
-			margin: 0;
-			min-height: 28px;
-			padding: 4px;
-		}
-
-		input {
-			appearance: none;
-			border: 0;
-			display: block;
-			font-size: 12px;
-			margin: 0;
-			max-width: 100%;
-			padding: 4px;
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
 			outline: none;
-		}
 
-		tr {
-			// border-top: 1px solid #ccc;
+			input {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
 
-			// &:last-child {
-			// 	border-bottom: 1px solid #ccc;
-			// }
+			span {
+				background-color: transparent;
+				// border: 2px solid transparent;
+				display: block;
+				font-size: 12px;
+				margin: 0;
+				min-height: 28px;
+				padding: 4px;
+			}
 
-			// &:nth-child(even) {
-			// 	background-color: #eee;
+			input {
+				appearance: none;
+				border: 0;
+				display: block;
+				font-size: 12px;
+				margin: 0;
+				max-width: 100%;
+				padding: 4px;
+				outline: none;
+			}
 
-			// 	input {
-			// 		background-color: #eee;
-			// 	}
-			// }
+			tr {
+				// border-top: 1px solid #ccc;
 
-			td {
-				// border-left: 1px solid #ccc;
-				min-width: 60px;
-				padding: 0;
-				position: relative;
+				// &:last-child {
+				// 	border-bottom: 1px solid #ccc;
+				// }
 
-				// &.selected {
+				// &:nth-child(even) {
+				// 	background-color: #eee;
 
-				// 	span {
-				// 		border: 2px solid #aaa;
+				// 	input {
+				// 		background-color: #eee;
 				// 	}
 				// }
 
-				// &:last-child {
-				// 	border-right: 1px solid #ccc;
-				// }
+				td {
+					// border-left: 1px solid #ccc;
+					min-width: 60px;
+					padding: 0;
+					position: relative;
+
+					// &.selected {
+
+					// 	span {
+					// 		border: 2px solid #aaa;
+					// 	}
+					// }
+
+					// &:last-child {
+					// 	border-right: 1px solid #ccc;
+					// }
+				}
 			}
+		}
+	}
+
+	&__ui {
+		text-align: right;
+
+		button {
+			margin-left: 10px;
 		}
 	}
 }

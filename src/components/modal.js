@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 
 const { Button, Modal } = wp.components;
 
@@ -16,19 +16,20 @@ class DataModal extends Component {
 
 	render() {
 		return (
-			<div>
+			<Fragment>
 				<Button isDefault onClick={ () => this.setState( { isOpen: true } ) }>Edit Chart Data</Button>
 				{ this.state.isOpen && (
 					<Modal
 						title={ this.props.title }
-						onRequestClose={ () => this.setState( { isOpen: false } ) }>
-						<div className="gutengraphs-datasheet-instructions">
+						onRequestClose={ () => this.setState( { isOpen: false } ) }
+					>
+						<div className="gutengraphs-datasheet__instructions">
 							<p>Empty rows and columns are cleared on graph update. To create a new row or column, focus the last cell in a row or column and navigate down or to the right respectively.</p>
 						</div>
-						<div className="gutengraphs-datasheet">
+						<div className="gutengraphs-datasheet__spreadsheet">
 							<Spreadsheet chartData={ this.props.chartData } />
 						</div>
-						<div className="gutengraphs-datasheet-ui">
+						<div className="gutengraphs-datasheet__ui">
 							<Button isDefault isPrimary onClick={ () => {
 								this.props.handleUpdateChartData( this.state.chartData.rows );
 								this.setState( { isOpen: false } );
@@ -36,7 +37,7 @@ class DataModal extends Component {
 						</div>
 					</Modal>
 				) }
-			</div>
+			</Fragment>
 		);
 	}
 }
