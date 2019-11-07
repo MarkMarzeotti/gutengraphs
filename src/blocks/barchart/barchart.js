@@ -12,7 +12,6 @@ const { __ } = wp.i18n;
 const { InspectorControls } = wp.editor;
 const { PanelBody, TextControl } = wp.components;
 const { registerBlockType } = wp.blocks;
-const { Component } = wp.element;
 
 const icon = <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 480 480">
 	<path style={ { fill: '#1E88E5' } } d="M432,16h-64c-8.832,0-16,7.168-16,16v400c0,8.832,7.168,16,16,16h64c8.832,0,16-7.168,16-16V32
@@ -116,7 +115,7 @@ registerBlockType( 'gutengraphs/barchart', {
 			// remove empty columns
 			emptyColumns.map( ( col, colIndex ) => {
 				if ( col ) {
-					chartData.map( ( row ) => {
+					chartData.map( row => {
 						row.splice( colIndex - offset, 1 );
 					} );
 					offset++;
@@ -141,7 +140,7 @@ registerBlockType( 'gutengraphs/barchart', {
 						id="chart-title"
 						format="string"
 						label={ __( 'Title' ) }
-						onChange={ ( content ) => {
+						onChange={ content => {
 							props.setAttributes( { chartTitle: content } );
 						} }
 						value={ props.attributes.chartTitle }
@@ -150,7 +149,7 @@ registerBlockType( 'gutengraphs/barchart', {
 						id="chart-subtitle"
 						format="string"
 						label={ __( 'Subtitle' ) }
-						onChange={ ( content ) => {
+						onChange={ content => {
 							props.setAttributes( { chartSubtitle: content } );
 						} }
 						value={ props.attributes.chartSubtitle }
