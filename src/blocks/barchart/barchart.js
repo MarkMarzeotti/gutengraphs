@@ -52,9 +52,14 @@ registerBlockType( 'gutengraphs/barchart', {
 		// 	type: 'boolean',
 		// },
 		chartData: {
-			selector: 'div',
-			source: 'attribute',
-			attribute: 'data-content',
+			type: 'array',
+			default: [
+				[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
+				[ '2014', 1000, 400, 200 ],
+				[ '2015', 1170, 460, 250 ],
+				[ '2016', 660, 1120, 300 ],
+				[ '2017', 1030, 540, 350 ],
+			],
 		},
 		renderedChart: {
 			type: 'string',
@@ -65,53 +70,25 @@ registerBlockType( 'gutengraphs/barchart', {
 		__( 'chart' ),
 		__( 'graph' ),
 	],
-	edit: class extends Component {
-		constructor() {
-			super( ...arguments );
+	edit: props => {
+		const handleUpdateChartData = newChartData => {
+			// change updated chart data to the chart's expected format
+			const chartData = newChartData.map( row => {
+				return row.map( col => {
+					return col.value;
+				} );
+			} );
 
-			this.state = {
-				saveChartData: false,
-			};
-
-			if ( this.props.attributes.chartData ) {
-				this.state.chartData = JSON.parse( this.props.attributes.chartData );
-			} else {
-				this.state.chartData = [
-					[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
-					[ '2014', 1000, 400, 200 ],
-					[ '2015', 1170, 460, 250 ],
-					[ '2016', 660, 1120, 300 ],
-					[ '2017', 1030, 540, 350 ],
-				];
-				this.props.setAttributes( { chartData: JSON.stringify( this.state.chartData ) } );
-			}
-		}
-
-		componentDidMount() {
-			setTimeout( () => {
-				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"] svg' ).outerHTML;
-				this.setState( { renderedChart: renderedChart } );
-				this.props.setAttributes( { renderedChart: renderedChart } );
-			}, 3000 );
-		}
-
-		componentDidUpdate() {
-			if ( this.state.saveChartData ) {
-				const renderedChart = document.body.querySelector( '[data-block="' + this.props.clientId + '"] svg' ).outerHTML;
-				this.setState( { saveChartData: false } );
-				this.props.setAttributes( { renderedChart: renderedChart } );
-			}
-		}
-
-		handleUpdateChartData = ( newChartData ) => {
 			const emptyRows = [];
 			const emptyColumns = [];
 
-			newChartData[ 0 ].map( ( col, colIndex ) => {
+			// identify empty columns in first row
+			chartData[ 0 ].map( ( col, colIndex ) => {
 				emptyColumns[ colIndex ] = col ? false : true;
 			} );
 
-			newChartData.map( ( row, rowIndex ) => {
+			// identify empty rows
+			chartData.map( ( row, rowIndex ) => {
 				let currentRowEmpty = true;
 				row.map( ( col, colIndex ) => {
 					if ( col ) {
@@ -126,90 +103,88 @@ registerBlockType( 'gutengraphs/barchart', {
 
 			let offset = 0;
 
+			// remove the empty rows
 			emptyRows.map( ( row, rowIndex ) => {
 				if ( row ) {
-					newChartData.splice( rowIndex - offset, 1 );
+					chartData.splice( rowIndex - offset, 1 );
 					offset++;
 				}
 			} );
 
 			offset = 0;
 
+			// remove empty columns
 			emptyColumns.map( ( col, colIndex ) => {
 				if ( col ) {
-					newChartData.map( ( row ) => {
+					chartData.map( ( row ) => {
 						row.splice( colIndex - offset, 1 );
 					} );
 					offset++;
 				}
 			} );
 
-			this.props.setAttributes( { chartData: JSON.stringify( newChartData ) } );
-			this.setState( { saveChartData: true } );
-		}
+			// update the chart with new data
+			props.setAttributes( { chartData: chartData } );
+		};
 
-		render() {
-			return [
-				<InspectorControls key="1">
-					<PanelBody title={ __( 'Settings' ) }>
-						{ /*<ToggleControl
-							id="chart-display"
-							label={ __( 'Save as interactive chart or SVG' ) }
-							help={ this.props.attributes.saveSVG ? __( 'Save as interactive chart.' ) : __( 'Save as SVG.' ) } 
-							checked={ this.props.attributes.saveSVG }
-							onChange={ () => this.props.setAttributes( { saveSVG: ! this.props.attributes.saveSVG } ) }
-						/>*/ }
-						<TextControl
-							id="chart-title"
-							format="string"
-							label={ __( 'Title' ) }
-							onChange={ ( content ) => {
-								this.props.setAttributes( { chartTitle: content } );
-								this.setState( { saveChartData: true } );
-							} }
-							value={ this.props.attributes.chartTitle }
-						/>
-						<TextControl
-							id="chart-subtitle"
-							format="string"
-							label={ __( 'Subtitle' ) }
-							onChange={ ( content ) => {
-								this.props.setAttributes( { chartSubtitle: content } );
-								this.setState( { saveChartData: true } );
-							} }
-							value={ this.props.attributes.chartSubtitle }
-						/>
-					</PanelBody>
-					<PanelBody title={ __( 'Graph Data' ) }>
-						<DataModal
-							title={ this.props.attributes.chartTitle }
-							chartData={ this.state.chartData }
-							handleUpdateChartData={ this.handleUpdateChartData }
-						/>
-					</PanelBody>
-				</InspectorControls>,
-				<div className={ this.props.className } key="2">
-					<Chart
-						chartType="Bar"
-						data={ this.state.chartData }
-						options={ {
-							chart: {
-								title: this.props.attributes.chartTitle,
-								subtitle: this.props.attributes.chartSubtitle,
-							},
-						} } />
-				</div>,
-			];
-		}
+		return [
+			<InspectorControls key="1">
+				<PanelBody title={ __( 'Settings' ) }>
+					{ /*<ToggleControl
+						id="chart-display"
+						label={ __( 'Save as interactive chart or SVG' ) }
+						help={ props.attributes.saveSVG ? __( 'Save as interactive chart.' ) : __( 'Save as SVG.' ) }
+						checked={ props.attributes.saveSVG }
+						onChange={ () => props.setAttributes( { saveSVG: ! props.attributes.saveSVG } ) }
+					/>*/ }
+					<TextControl
+						id="chart-title"
+						format="string"
+						label={ __( 'Title' ) }
+						onChange={ ( content ) => {
+							props.setAttributes( { chartTitle: content } );
+						} }
+						value={ props.attributes.chartTitle }
+					/>
+					<TextControl
+						id="chart-subtitle"
+						format="string"
+						label={ __( 'Subtitle' ) }
+						onChange={ ( content ) => {
+							props.setAttributes( { chartSubtitle: content } );
+						} }
+						value={ props.attributes.chartSubtitle }
+					/>
+				</PanelBody>
+				<PanelBody title={ __( 'Graph Data' ) }>
+					<DataModal
+						title={ props.attributes.chartTitle }
+						chartData={ props.attributes.chartData }
+						handleUpdateChartData={ handleUpdateChartData }
+					/>
+				</PanelBody>
+			</InspectorControls>,
+			<div className={ props.className } key="2">
+				<Chart
+					chartType="Bar"
+					data={ props.attributes.chartData }
+					options={ {
+						chart: {
+							title: props.attributes.chartTitle,
+							subtitle: props.attributes.chartSubtitle,
+						},
+					} } />
+			</div>,
+		];
 	},
-	save: function( props ) {
+	save: props => {
 		return (
 			<div
 				id="barchart_material"
 				className={ props.className }
 				data-title={ props.attributes.chartTitle }
 				data-subtitle={ props.attributes.chartSubtitle }
-				data-content={ props.attributes.chartData }
+				data-content={ JSON.stringify( props.attributes.chartData ) }
 				dangerouslySetInnerHTML={ { __html: props.attributes.renderedChart } }
 			/>
 		);

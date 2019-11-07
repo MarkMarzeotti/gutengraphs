@@ -7,10 +7,15 @@ import ReactDataSheet from 'react-datasheet';
 class Spreadsheet extends Component {
 	constructor( props ) {
 		super( props );
-		const grid = [
-			[ { value: 1 }, { value: 3 } ],
-			[ { value: 2 }, { value: 4 } ],
-		];
+		// const grid = [
+		// 	[ { value: 1 }, { value: 3 } ],
+		// 	[ { value: 2 }, { value: 4 } ],
+		// ];
+		const grid = props.chartData.map( row => {
+			return row.map( col => {
+				return { value: col };
+			} );
+		} );
 		this.state = {
 			grid,
 			cell: {
@@ -72,6 +77,7 @@ class Spreadsheet extends Component {
 		}
 
 		this.setState( { grid } );
+		this.props.handleUpdateChartData( grid );
 	}
 
 	handleAddRow = below => {
@@ -98,6 +104,7 @@ class Spreadsheet extends Component {
 		}
 
 		this.setState( { grid } );
+		this.props.handleUpdateChartData( grid );
 	}
 
 	handleAddCol = right => {
@@ -130,6 +137,7 @@ class Spreadsheet extends Component {
 		}
 
 		this.setState( { grid } );
+		this.props.handleUpdateChartData( grid );
 	}
 
 	handleRemoveRow = () => {
@@ -139,6 +147,7 @@ class Spreadsheet extends Component {
 		grid.splice( this.state.cell.start.i, rowsToDelete );
 
 		this.setState( { grid } );
+		this.props.handleUpdateChartData( grid );
 	}
 
 	handleRemoveCol = () => {
@@ -151,6 +160,7 @@ class Spreadsheet extends Component {
 		} );
 
 		this.setState( { grid } );
+		this.props.handleUpdateChartData( grid );
 	}
 
 	render() {
