@@ -2,7 +2,7 @@ import { Component, Fragment } from 'react';
 
 const { Button, Modal } = wp.components;
 
-import Spreadsheet from './spreadsheet';
+import Spreadsheet from './Spreadsheet';
 
 class DataModal extends Component {
 	constructor( props ) {

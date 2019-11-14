@@ -56,18 +56,13 @@ function gutengraphs_block_assets() { // phpcs:ignore
 
 	// Register Gutenberg block on server-side.
 	register_block_type(
-		'gutengraphs/barchart', array(
-			// Enqueue blocks.style.build.css on both frontend & backend.
+		'gutengraphs/barchart',
+		array(
 			'style'         => 'gutengraphs-style-css',
-			// Enqueue blocks.build.js in the editor only.
 			'editor_script' => 'gutengraphs-block-js',
-			// Enqueue blocks.editor.build.css in the editor only.
 			'editor_style'  => 'gutengraphs-block-editor-css',
 		)
 	);
-
-	wp_enqueue_script( 'google-charts-loader' );
-	wp_enqueue_script( 'google-charts' );
 }
 add_action( 'init', 'gutengraphs_block_assets' );
 
@@ -76,7 +71,7 @@ add_action( 'init', 'gutengraphs_block_assets' );
  *
  * Assets enqueued:
  * 1. Google Charts.
- * 
+ *
  * @since 1.0.0
  */
 function gutengraphs_block_frontend_assets() {
@@ -84,16 +79,18 @@ function gutengraphs_block_frontend_assets() {
 		'google-charts-loader',
 		'https://www.gstatic.com/charts/loader.js',
 		array(),
-		null,
+		'1.0',
 		true
 	);
+
 	wp_register_script(
 		'google-charts',
 		plugins_url( 'src/common.js', dirname( __FILE__ ) ),
 		array( 'google-charts-loader' ),
-		null,
+		'1.0',
 		true
 	);
+
 	wp_enqueue_script( 'google-charts-loader' );
 	wp_enqueue_script( 'google-charts' );
 }
@@ -101,7 +98,7 @@ add_action( 'wp_enqueue_scripts', 'gutengraphs_block_frontend_assets' );
 
 /**
  * Add block category for Graphs.
- * 
+ *
  * @since 1.0.0
  */
 function gutengraphs_add_block_category( $categories, $post ) {
