@@ -23,9 +23,6 @@ class DataModal extends Component {
 						title={ this.props.title }
 						onRequestClose={ () => this.setState( { isOpen: false } ) }
 					>
-						<div className="gutengraphs-datasheet__instructions">
-							<p>Empty rows and columns are cleared on graph update. To create a new row or column, focus the last cell in a row or column and navigate down or to the right respectively.</p>
-						</div>
 						<div className="gutengraphs-datasheet__spreadsheet">
 							<Spreadsheet
 								chartData={ this.props.chartData }
