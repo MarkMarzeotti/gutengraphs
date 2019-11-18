@@ -4,11 +4,27 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
+#gutengraphs-bar-chart,
+#gutengraphs-pie-chart {
+  display: block;
+  position: relative;
+  width: 100%; }
+
 /**
  * #.# Styles
  *
  * CSS for both Frontend+Backend.
  */
+.wp-block-gutengraphs-barchart .bar-chart-container {
+  position: relative;
+  padding-bottom: 30%; }
+  .wp-block-gutengraphs-barchart .bar-chart-container .bar-chart {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
+
 .wp-block-gutengraphs-barchart svg {
   overflow: visible; }
 /**
@@ -17,10 +33,55 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
+#gutengraphs-bar-chart,
+#gutengraphs-pie-chart {
+  display: block;
+  position: relative;
+  width: 100%; }
+
 /**
  * #.# Styles
  *
  * CSS for both Frontend+Backend.
  */
-.wp-block-gutengraphs-barchart svg {
+.wp-block-gutengraphs-piechart .pie-chart-container {
+  position: relative;
+  padding-bottom: 60%; }
+  .wp-block-gutengraphs-piechart .pie-chart-container .pie-chart {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
+
+.wp-block-gutengraphs-piechart svg {
+  overflow: visible; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+#gutengraphs-bar-chart,
+#gutengraphs-pie-chart {
+  display: block;
+  position: relative;
+  width: 100%; }
+
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+.wp-block-gutengraphs-scatterchart .scatter-chart-container {
+  position: relative;
+  padding-bottom: 60%; }
+  .wp-block-gutengraphs-scatterchart .scatter-chart-container .scatter-chart {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; }
+
+.wp-block-gutengraphs-scatterchart svg {
   overflow: visible; }

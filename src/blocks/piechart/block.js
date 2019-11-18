@@ -12,7 +12,7 @@ import './editor.scss';
 
 const { __ } = wp.i18n;
 const { InspectorControls } = wp.editor;
-const { MenuGroup, MenuItemsChoice, PanelBody, TextControl } = wp.components;
+const { PanelBody, TextControl } = wp.components;
 const { registerBlockType } = wp.blocks;
 
 /*
@@ -35,6 +35,9 @@ registerBlockType( 'gutengraphs/piechart', {
 				chart: {
 					title: '',
 					subtitle: '',
+				},
+				legend: {
+					position: 'bottom',
 				},
 			},
 		},
@@ -164,7 +167,7 @@ registerBlockType( 'gutengraphs/piechart', {
 					} )
 				</PanelBody> */ }
 			</InspectorControls>,
-			<div className={ props.className } key="2">
+			<div id="gutengraphs-pie-chart" className={ props.className } key="2">
 				<PieChart
 					clientId={ props.clientId }
 					chartOptions={ props.attributes.chartOptions }
@@ -180,7 +183,12 @@ registerBlockType( 'gutengraphs/piechart', {
 				className={ props.className }
 				data-options={ JSON.stringify( props.attributes.chartOptions ) }
 				data-content={ JSON.stringify( props.attributes.chartData ) }
-			/>
+			>
+				<div className="pie-chart-container">
+					<div className="pie-chart">
+					</div>
+				</div>
+			</div>
 		);
 	},
 } );

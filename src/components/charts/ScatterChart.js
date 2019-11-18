@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 import scriptjs from 'scriptjs';
 
-class PieChart extends Component {
+class ScatterChart extends Component {
 	componentDidMount() {
 		scriptjs.get( 'https://www.gstatic.com/charts/loader.js', () => {
 			/* eslint-disable */
@@ -19,22 +19,22 @@ class PieChart extends Component {
 	}
 
 	drawChart() {
-		const chartItem = document.body.querySelector( '[data-block="' + this.props.clientId + '"] .pie-chart' );
+		const chartItem = document.body.querySelector( '[data-block="' + this.props.clientId + '"] .scatter-chart' );
 		/* eslint-disable */
 		const data = google.visualization.arrayToDataTable( this.props.chartData );
-		const chart = new google.visualization.PieChart( chartItem );
+		const chart = new google.visualization.ScatterChart( chartItem );
 		/* eslint-enable */
 		chart.draw( data, this.props.chartOptions );
 	}
 
 	render() {
 		return (
-			<div className="pie-chart-container">
-				<div className="pie-chart">
+			<div className="scatter-chart-container">
+				<div className="scatter-chart">
 				</div>
 			</div>
 		);
 	}
 }
 
-export default PieChart;
+export default ScatterChart;

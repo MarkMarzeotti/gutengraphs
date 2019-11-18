@@ -1,11 +1,11 @@
 /*
- * BLOCK: Bar Chart
+ * BLOCK: Scatter Chart
  */
 
-import BarChart from '../../components/charts/BarChart';
+import ScatterChart from '../../components/charts/ScatterChart';
 import DataModal from '../../components/DataModal';
 
-import icon from '../../icons/barchart';
+import icon from '../../icons/scatterchart';
 
 import './style.scss';
 import './editor.scss';
@@ -16,16 +16,16 @@ const { MenuGroup, MenuItemsChoice, PanelBody, TextControl } = wp.components;
 const { registerBlockType } = wp.blocks;
 
 /*
- * Register: Bar Chart Gutenberg Block.
+ * Register: Scatter Chart Gutenberg Block.
  *
  * @link https://wordpress.org/gutenberg/handbook/block-api/
  * @param  {string}   name     Block name.
  * @param  {Object}   settings Block settings.
  * @return {?WPBlock}          The block.
  */
-registerBlockType( 'gutengraphs/barchart', {
-	title: __( 'Bar Chart' ),
-	description: __( 'Display data as a bar chart.' ),
+registerBlockType( 'gutengraphs/scatterchart', {
+	title: __( 'Scatter Chart' ),
+	description: __( 'Display data as a scatter chart.' ),
 	icon: icon,
 	category: 'graphs',
 	attributes: {
@@ -44,16 +44,18 @@ registerBlockType( 'gutengraphs/barchart', {
 		chartData: {
 			type: 'array',
 			default: [
-				[ 'Year', 'Revenue', 'Sales', 'Expenses' ],
-				[ '2014', 1000, 400, 200 ],
-				[ '2015', 1170, 460, 250 ],
-				[ '2016', 660, 1120, 300 ],
-				[ '2017', 1030, 540, 350 ],
+				[ 'Age', 'Weight' ],
+				[ 8, 12 ],
+				[ 4, 5.5 ],
+				[ 11, 14 ],
+				[ 4, 5 ],
+				[ 3, 3.5 ],
+				[ 6.5, 7 ],
 			],
 		},
 	},
 	keywords: [
-		__( 'bar chart' ),
+		__( 'scatter chart' ),
 		__( 'chart' ),
 		__( 'graph' ),
 	],
@@ -182,32 +184,14 @@ registerBlockType( 'gutengraphs/barchart', {
 				</PanelBody>
 				<PanelBody title={ __( 'Data' ) }>
 					<DataModal
-						title={ __( 'Bar Chart Data' ) }
+						title={ __( 'Scatter Chart Data' ) }
 						chartData={ props.attributes.chartData }
 						handleUpdateChartData={ handleUpdateChartData }
 					/>
 				</PanelBody>
-				{ /* <PanelBody title={ __( 'Style' ) }>
-					props.attributes.chartData[ 0 ].map( ( col, index ) => {
-						if ( index !== 0 ) {
-							return <Fragment>
-								<p>{ props.attributes.chartData[ 0 ][ index ] } Color</p>
-								<ColorPalette
-									colors={ chartDefaultColors }
-									value={ props.attributes.chartStyle[ index ] }
-									onChange={ ( color ) => {
-										const chartStyle = { ...props.attributes.chartStyle };
-										chartStyle[ index ] = color;
-										props.setAttributes( { chartStyle } );
-									} }
-								/>
-							</Fragment>;
-						}
-					} )
-				</PanelBody> */ }
 			</InspectorControls>,
-			<div id="gutengraphs-bar-chart" className={ props.className } key="2">
-				<BarChart
+			<div id="gutengraphs-scatter-chart" className={ props.className } key="2">
+				<ScatterChart
 					clientId={ props.clientId }
 					chartOptions={ props.attributes.chartOptions }
 					chartData={ props.attributes.chartData }
@@ -218,13 +202,13 @@ registerBlockType( 'gutengraphs/barchart', {
 	save: props => {
 		return (
 			<div
-				id="gutengraphs-bar-chart"
+				id="gutengraphs-scatter-chart"
 				className={ props.className }
 				data-options={ JSON.stringify( props.attributes.chartOptions ) }
 				data-content={ JSON.stringify( props.attributes.chartData ) }
 			>
-				<div className="bar-chart-container">
-					<div className="bar-chart">
+				<div className="scatter-chart-container">
+					<div className="scatter-chart">
 					</div>
 				</div>
 			</div>
