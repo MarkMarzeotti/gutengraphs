@@ -8,7 +8,6 @@ import DataModal from '../../components/DataModal';
 import icon from '../../icons/scatterchart';
 
 import './style.scss';
-import './editor.scss';
 
 const { __ } = wp.i18n;
 const { InspectorControls } = wp.editor;
