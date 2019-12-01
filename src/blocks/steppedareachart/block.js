@@ -1,5 +1,5 @@
 /*
- * BLOCK: Scatter Chart
+ * BLOCK: Stepped Area Chart
  */
 
 import Chart from '../../components/Chart';
@@ -19,16 +19,16 @@ const { PanelBody } = wp.components;
 const { registerBlockType } = wp.blocks;
 
 /*
- * Register: Scatter Chart Gutenberg Block.
+ * Register: Stepped Area Chart Gutenberg Block.
  *
  * @link https://wordpress.org/gutenberg/handbook/block-api/
  * @param  {string}   name     Block name.
  * @param  {Object}   settings Block settings.
  * @return {?WPBlock}          The block.
  */
-registerBlockType( 'gutengraphs/scatterchart', {
-	title: __( 'Scatter Chart' ),
-	description: __( 'Display data as a scatter chart.' ),
+registerBlockType( 'gutengraphs/steppedareachart', {
+	title: __( 'Stepped Area Chart' ),
+	description: __( 'Display data as a stepped area chart.' ),
 	icon: icon,
 	category: 'graphs',
 	attributes: {
@@ -51,18 +51,16 @@ registerBlockType( 'gutengraphs/scatterchart', {
 		chartData: {
 			type: 'array',
 			default: [
-				[ 'Age', 'Weight' ],
-				[ 8, 12 ],
-				[ 4, 5.5 ],
-				[ 11, 14 ],
-				[ 4, 5 ],
-				[ 3, 3.5 ],
-				[ 6.5, 7 ],
+				[ 'Director (Year)', 'Rotten Tomatoes', 'IMDB' ],
+				[ 'Alfred Hitchcock (1935)', 8.4, 7.9 ],
+				[ 'Ralph Thomas (1959)', 6.9, 6.5 ],
+				[ 'Don Sharp (1978)', 6.5, 6.4 ],
+				[ 'James Hawes (2008)', 4.4, 6.2 ],
 			],
 		},
 	},
 	keywords: [
-		__( 'scatter chart' ),
+		__( 'stepped area chart' ),
 		__( 'chart' ),
 		__( 'graph' ),
 	],
@@ -80,7 +78,7 @@ registerBlockType( 'gutengraphs/scatterchart', {
 				<Chart
 					clientId={ props.clientId }
 					attributes={ props.attributes }
-					chartFunction="ScatterChart"
+					chartFunction="SteppedAreaChart"
 				/>
 			</div>,
 		];
@@ -92,7 +90,7 @@ registerBlockType( 'gutengraphs/scatterchart', {
 				className="gutengraph"
 				data-options={ JSON.stringify( props.attributes.chartOptions ) }
 				data-content={ JSON.stringify( props.attributes.chartData ) }
-				data-function="ScatterChart"
+				data-function="SteppedAreaChart"
 			>
 				<div className="chart-container" style={ { paddingBottom: chartHeight + '%' } }>
 					<div className="chart">

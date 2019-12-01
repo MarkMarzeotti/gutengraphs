@@ -1,5 +1,5 @@
 /*
- * BLOCK: Scatter Chart
+ * BLOCK: Bar Chart
  */
 
 import Chart from '../../components/Chart';
@@ -19,22 +19,22 @@ const { PanelBody } = wp.components;
 const { registerBlockType } = wp.blocks;
 
 /*
- * Register: Scatter Chart Gutenberg Block.
+ * Register: Bar Chart Gutenberg Block.
  *
  * @link https://wordpress.org/gutenberg/handbook/block-api/
  * @param  {string}   name     Block name.
  * @param  {Object}   settings Block settings.
  * @return {?WPBlock}          The block.
  */
-registerBlockType( 'gutengraphs/scatterchart', {
-	title: __( 'Scatter Chart' ),
-	description: __( 'Display data as a scatter chart.' ),
+registerBlockType( 'gutengraphs/candlestickchart', {
+	title: __( 'Candlestick Chart' ),
+	description: __( 'Display data as a candlestick chart.' ),
 	icon: icon,
 	category: 'graphs',
 	attributes: {
 		chartHeight: {
 			type: 'integer',
-			default: 30,
+			default: 25,
 		},
 		chartOptions: {
 			type: 'object',
@@ -51,18 +51,16 @@ registerBlockType( 'gutengraphs/scatterchart', {
 		chartData: {
 			type: 'array',
 			default: [
-				[ 'Age', 'Weight' ],
-				[ 8, 12 ],
-				[ 4, 5.5 ],
-				[ 11, 14 ],
-				[ 4, 5 ],
-				[ 3, 3.5 ],
-				[ 6.5, 7 ],
+				[ 'Mon', 20, 28, 38, 45 ],
+				[ 'Tue', 31, 38, 55, 66 ],
+				[ 'Wed', 50, 55, 77, 80 ],
+				[ 'Thu', 77, 77, 66, 50 ],
+				[ 'Fri', 68, 66, 22, 15 ],
 			],
 		},
 	},
 	keywords: [
-		__( 'scatter chart' ),
+		__( 'candlestick chart' ),
 		__( 'chart' ),
 		__( 'graph' ),
 	],
@@ -80,7 +78,7 @@ registerBlockType( 'gutengraphs/scatterchart', {
 				<Chart
 					clientId={ props.clientId }
 					attributes={ props.attributes }
-					chartFunction="ScatterChart"
+					chartFunction="CandlestickChart"
 				/>
 			</div>,
 		];
@@ -92,7 +90,7 @@ registerBlockType( 'gutengraphs/scatterchart', {
 				className="gutengraph"
 				data-options={ JSON.stringify( props.attributes.chartOptions ) }
 				data-content={ JSON.stringify( props.attributes.chartData ) }
-				data-function="ScatterChart"
+				data-function="CandlestickChart"
 			>
 				<div className="chart-container" style={ { paddingBottom: chartHeight + '%' } }>
 					<div className="chart">

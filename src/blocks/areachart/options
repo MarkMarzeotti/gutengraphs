@@ -1,0 +1,61 @@
+const { MenuGroup, MenuItemsChoice } = wp.components;
+
+<MenuGroup label="Chart Direction">
+	<MenuItemsChoice
+		choices={ [
+			{
+				value: 'vertical',
+				label: 'Vertical',
+			},
+			{
+				value: 'horizontal',
+				label: 'Horizontal',
+			},
+		] }
+		value={ props.attributes.chartOptions.bars }
+		onSelect={ mode => {
+			const chartOptions = { ...props.attributes.chartOptions };
+			chartOptions.bars = mode;
+			props.setAttributes( { chartOptions } );
+		} }
+	/>
+</MenuGroup>
+<MenuGroup label="Chart Format">
+	<MenuItemsChoice
+		choices={ [
+			{
+				value: false,
+				label: 'Separate',
+			},
+			{
+				value: true,
+				label: 'Stacked',
+			},
+		] }
+		value={ props.attributes.chartOptions.isStacked }
+		onSelect={ stacked => {
+			const chartOptions = { ...props.attributes.chartOptions };
+			chartOptions.isStacked = stacked;
+			props.setAttributes( { chartOptions } );
+		} }
+	/>
+</MenuGroup>
+
+<PanelBody title={ __( 'Style' ) }>
+	props.attributes.chartData[ 0 ].map( ( col, index ) => {
+		if ( index !== 0 ) {
+			return <Fragment>
+				<p>{ props.attributes.chartData[ 0 ][ index ] } Color</p>
+				<ColorPalette
+					colors={ chartDefaultColors }
+					value={ props.attributes.chartStyle[ index ] }
+					onChange={ ( color ) => {
+						const chartStyle = { ...props.attributes.chartStyle };
+						chartStyle[ index ] = color;
+						props.setAttributes( { chartStyle } );
+					} }
+				/>
+			</Fragment>;
+		}
+	} )
+</PanelBody>

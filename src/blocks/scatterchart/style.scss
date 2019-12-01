@@ -4,22 +4,9 @@
  * CSS for both Frontend+Backend.
  */
 
-.wp-block-gutengraphs-scatterchart {
+ .gutengraph {
 
-	.scatter-chart-container {
-		position: relative;
+	.chart-container {
 		padding-bottom: 60%;
-
-		.scatter-chart {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-		}
-	}
-
-	svg {
-		overflow: visible;
 	}
 }

@@ -1,5 +1,5 @@
 node_modules
-src/icons
+src/icons/*.svg
 .DS_Store
 
 ## Uncomment line below if you prefer to
