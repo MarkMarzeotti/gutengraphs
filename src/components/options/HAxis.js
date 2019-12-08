@@ -3,21 +3,21 @@ import { Component } from 'react';
 const { __ } = wp.i18n;
 const { TextControl } = wp.components;
 
-class Title extends Component {
+class HAxis extends Component {
 	render() {
 		return (
 			<TextControl
 				format="string"
-				label={ __( 'Title' ) }
+				label={ __( 'Axis Label' ) }
 				onChange={ content => {
 					const chartOptions = { ...this.props.attributes.chartOptions };
-					chartOptions.title = content;
+					chartOptions.hAxis.title = content;
 					this.props.setAttributes( { chartOptions } );
 				} }
-				value={ this.props.attributes.chartOptions.title }
-			/>
+				value={ this.props.attributes.chartOptions.hAxis.title }
+			/> // add a show ticks option!!!!!
 		);
 	}
 }
 
-export default Title;
+export default HAxis;

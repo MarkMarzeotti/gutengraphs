@@ -6,7 +6,9 @@ import Chart from '../../components/Chart';
 
 import Data from '../../components/options/Data';
 import Title from '../../components/options/Title';
-import Subtitle from '../../components/options/Subtitle';
+import HAxis from '../../components/options/HAxis';
+import VAxis from '../../components/options/VAxis';
+import Legend from '../../components/options/Legend';
 import Height from '../../components/options/Height';
 
 import icon from './icon';
@@ -39,13 +41,25 @@ registerBlockType( 'gutengraphs/areachart', {
 		chartOptions: {
 			type: 'object',
 			default: {
-				chart: {
+				title: '',
+				hAxis: {
 					title: '',
-					subtitle: '',
+					ticks: [ 0 ],
+				},
+				vAxis: {
+					title: '',
+					ticks: 'auto', // [ 0 ],
 				},
 				legend: {
 					position: 'bottom',
 				},
+				// chartArea: {
+				// 	left: 0,
+				// 	top: 0,
+				// 	width: '100%',
+				// 	height: '100%',
+				// },
+				// colors: [ 'red', '#004411' ],
 			},
 		},
 		chartData: {
@@ -65,12 +79,52 @@ registerBlockType( 'gutengraphs/areachart', {
 		__( 'graph' ),
 	],
 	edit: props => {
+		const positions = [
+			{
+				label: 'Top',
+				value: {
+					position: 'top',
+				},
+				isSelected: props.attributes.chartOptions.legend.position === 'top',
+			},
+			{
+				label: 'Right',
+				value: {
+					position: 'right',
+				},
+				isSelected: props.attributes.chartOptions.legend.position === 'right',
+			},
+			{
+				label: 'Bottom',
+				value: {
+					position: 'bottom',
+				},
+				isSelected: props.attributes.chartOptions.legend.position === 'bottom',
+			},
+			{
+				label: 'None',
+				value: 'none',
+				isSelected: props.attributes.chartOptions.legend === 'none',
+			},
+		];
+
 		return [
 			<InspectorControls key="1">
 				<PanelBody title={ __( 'Settings' ) }>
 					<Title setAttributes={ props.setAttributes } attributes={ props.attributes } />
-					<Subtitle setAttributes={ props.setAttributes } attributes={ props.attributes } />
 					<Height setAttributes={ props.setAttributes } attributes={ props.attributes } />
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Horizontal Axis' ) }
+					initialOpen={ false }
+				>
+					<HAxis setAttributes={ props.setAttributes } attributes={ props.attributes } />
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Vertical Axis' ) }
+					initialOpen={ false }
+				>
+					<VAxis setAttributes={ props.setAttributes } attributes={ props.attributes } />
 				</PanelBody>
 				<Data setAttributes={ props.setAttributes } attributes={ props.attributes } />
 			</InspectorControls>,
